@@ -49,8 +49,11 @@ start_link() ->
 %%                     {error, Reason}
 %% @end
 %%--------------------------------------------------------------------
+-define(CHILD(I, Type), {I, {I, start_link, []}, permanent, 5000, Type, [I]}).
 init([]) ->
-    {ok, {{one_for_one, 10, 1}, []}}.
+    RestartStrategy = {one_for_one, 5, 10},
+    ChildSpec = [?CHILD(iconv,worker)],
+    {ok, {RestartStrategy, ChildSpec}}.
 
 %%%===================================================================
 %%% Internal functions
